@@ -35,9 +35,13 @@ namespace PaymentContext.Domain.Entities
                     hasSubscriptionActive = true;
             }
 
+            if (!hasSubscriptionActive)
+                _subscriptions.Add(subscription);
+
             AddNotifications(new Contract()
                 .Requires()
                 .IsFalse(hasSubscriptionActive, "Student.Subscriptions", "There is an active subscription already")
+                .AreNotEquals(0, subscription.Payments.Count, "Student.Subscription.Payments", "There is no payment for this subscription")
             );
         }
     }
