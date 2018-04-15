@@ -1,14 +1,17 @@
 using System;
+using Flunt.Notifications;
+using Flunt.Validations;
 using PaymentContext.Domain.Enums;
+using PaymentContext.Shared.Commands;
 
 namespace PaymentContext.Domain.Commands
 {
-    public class CreatePayPaylSubscriptionCommand
+    public class CreatePayPalSubscriptionCommand : Notifiable, ICommand
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Document { get; set; }
-        public string Address { get; set; }
+        public string Email { get; set; }
         public string TransactionCode { get; set; }
         public string PaymentNumber { get; set; }
         public DateTime PaidDate { get; set; }
@@ -26,5 +29,15 @@ namespace PaymentContext.Domain.Commands
         public string State { get; set; }
         public string Country { get; set; }
         public string ZipCode { get; set; }
+
+        public void Validate()
+        {
+            AddNotifications(new Contract()
+                .Requires()
+                .HasMinLen(FirstName, 3, "Name.FirstName", "First Name must contain at least 3 characters")
+                .HasMinLen(LastName, 3, "Name.LastName", "Last Name must contain at least 3 characters")
+                .HasMaxLen(FirstName, 20, "Name.FirstName", "First Name must be 20 characters at max")
+            );
+        }
     }
 }
